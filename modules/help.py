@@ -19,7 +19,7 @@ async def help_msg(app: Ariadne, sender: Union[Group, Friend], message: MessageC
     if str(message) in ["ime help", "!ime", "！ime"]:
         # help信息
         help_message_one = [
-            "ImeBot DX v0.0.1 By Botiime\n"
+            "ImeBot DX v0.0.3 By Botiime\n"
             "你可以使用!ime help或者ime help来打开帮助菜单！\n"
         ]
         help_message_two = [

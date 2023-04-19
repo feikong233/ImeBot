@@ -8,7 +8,6 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.model import Group, Friend
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
-from jiting_cx import renshu_chaxun
 
 channel = Channel.current()
 
@@ -61,6 +60,23 @@ def zengjian_upload(n: str):
                         return False
 
 
+def renshu_chaxun():
+    n = 1
+    cx = ""
+    # 这里是通过num自增遍历一遍数据库里对应的条目，数据库中id列的数值是从1开始的正序整数
+    while n <= int(jts[0][0]):
+        # 获取对应的机厅名称
+        cur.execute("SELECT fullname FROM jiting WHERE id=" + str(n))
+        jtmc = cur.fetchall()
+        # 获取对应的机厅人数
+        cur.execute("SELECT people FROM jiting WHERE id=" + str(n))
+        jtrs = cur.fetchall()
+        # 生成包含机厅的名称和信息的字符串，然后进入下一次循环
+        cx = cx + str(jtmc[0][0]) + " 现在有 " + str(jtrs[0][0]) + " 人\n"
+        n = n + 1
+    return cx
+
+
 # 实现监听消息链并检测条件
 @channel.use(
     ListenerSchema(
@@ -71,4 +87,5 @@ async def upl(app: Ariadne, sender: Union[Group, Friend], message: MessageChain)
     msg = str(message)
     if zengjian_upload(msg):
         await app.send_message(sender, MessageChain("数据已更新！"))
+        # 查询一次人数
         await app.send_message(sender, MessageChain(renshu_chaxun()))
