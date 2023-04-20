@@ -60,7 +60,7 @@ def arcade_query(n: str):
                 # 用一个字符串返回查询结果
                 query = fullname + "现在有" + people + "人"
                 cur.close()
-                return True
+                return True, query
             else:
                 # 如果不符合，那么关闭指针并返回False
                 cur.close()
