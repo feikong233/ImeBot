@@ -34,6 +34,7 @@ def arcade_query(n: str):
     # 初始化变量
     num = 1
     sx = []
+    query = ""
     # 初始化数据库的连接并创建指针
     jtconn = sqlite3.connect("./db/jiting.db")
     cur = jtconn.cursor()
@@ -57,9 +58,10 @@ def arcade_query(n: str):
                 fullname = str(cur.fetchall()[0][0])
                 cur.execute("SELECT people FROM jiting WHERE name='" + str(jtsx[0]) + "'")
                 people = str(cur.fetchall()[0][0])
-                # 用一个字符串返回查询结果
+                # 用一个字符串存储查询结果
                 query = fullname + "现在有" + people + "人"
                 cur.close()
+                # 返回一个元组，包含True和查询的结果
                 return True, query
             else:
                 # 如果不符合，那么关闭指针并返回False
