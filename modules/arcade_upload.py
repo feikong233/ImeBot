@@ -23,10 +23,8 @@ async def upl(app: Ariadne, sender: Union[Group, Friend], message: MessageChain)
     case_changes = changes_upload(msg)
     case_number = number_upload(msg)
     if isinstance(case_changes, str):
-        await app.send_message(sender, MessageChain("数据已更新！"))
         # 查询一次人数
         await app.send_message(sender, MessageChain(case_changes))
     elif isinstance(case_number, str):
-        await app.send_message(sender, MessageChain("数据已更新！"))
         # 查询一次人数
         await app.send_message(sender, MessageChain(case_number))

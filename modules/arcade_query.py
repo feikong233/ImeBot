@@ -19,7 +19,7 @@ channel = Channel.current()
 )
 async def jtj(app: Ariadne, sender: Union[Group, Friend], message: MessageChain):
     # 检测对应命令
-    if str(message) in ["ime jtj", "机厅几", "机厅人数", "jtrs", "ime jtrs", "jtj"]:
+    if str(message) in ["ime jtj", "机厅几", "机厅人数", "jtrs", "ime jtrs", "ijtj"]:
         # 发送消息
         await app.send_message(sender, MessageChain("机厅信息：\n" + people_query() + "更多功能请使用ime help查询"))
     else:

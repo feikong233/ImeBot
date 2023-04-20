@@ -54,8 +54,11 @@ def people_query():
         # 获取对应的机厅人数
         cur.execute("SELECT people FROM jiting WHERE id=" + str(num))
         jtrs = cur.fetchall()
+        # 获取对应的机厅缩写
+        cur.execute("SELECT name FROM jiting WHERE id=" + str(num))
+        jtsx = cur.fetchall()
         # 生成包含机厅的名称和信息的字符串，然后进入下一次循环
-        cx = cx + str(jtmc[0][0]) + " 现在有 " + str(jtrs[0][0]) + " 人\n"
+        cx = cx + str(jtsx[0][0]) + " " + str(jtmc[0][0]) + " 现在有 " + str(jtrs[0][0]) + " 人\n"
         num = num + 1
     # 关闭指针
     cur.close()
@@ -103,27 +106,31 @@ def changes_upload(n):
                 # 判断正负
                 if str(zj[0]) == '+':
                     rs_now = rs_past + int(jtrs[0])
-                    # 数据为增，操作数据库并返回True
-                    cur.execute("UPDATE jiting SET people=" + str(rs_now) + " WHERE name='" + str(jtsx[0]) + "'")
-                    jtconn.commit()
-                    cur.close()
-                    return_msg = arcade_query_return(jtsx)
-                    return return_msg
-
-                else:
-                    # 数据为减，验证数据合理性
-                    rs_now = rs_past - int(jtrs[0])
-                    if rs_now >= 0:
-                        # 计算后数值合理，操纵数据库并返回True
+                    # 数据为增，操作数据库并返回生产的字符串
+                    if 0 <= rs_now <= 50:
                         cur.execute("UPDATE jiting SET people=" + str(rs_now) + " WHERE name='" + str(jtsx[0]) + "'")
                         jtconn.commit()
                         cur.close()
                         return_msg = arcade_query_return(jtsx)
                         return return_msg
-                    # 人数小于0，不合理，关闭指针并返回False
                     else:
                         cur.close()
-                        return False
+                        return_msg = "怎么有这么多人，你是不是在干什么坏事！"
+                        return return_msg
+                else:
+                    # 数据为减，验证数据合理性
+                    rs_now = rs_past - int(jtrs[0])
+                    if rs_now >= 0:
+                        # 计算后数值合理，操纵数据库并返回生成的字符串
+                        cur.execute("UPDATE jiting SET people=" + str(rs_now) + " WHERE name='" + str(jtsx[0]) + "'")
+                        jtconn.commit()
+                        cur.close()
+                        return_msg = arcade_query_return(jtsx)
+                        return return_msg
+                    # 人数小于0，不合理，关闭指针并返回字符串
+                    else:
+                        return_msg = "人数怎么可能是负数，你是不是在干什么坏事！"
+                        return return_msg
     cur.close()
 
 
@@ -151,8 +158,8 @@ def number_upload(n):
         for i in sx:
             if str(jtsx[0]) == str(i[0][0]):
                 # 判断数据是否合理
-                if int(jtrs[0]) >= 0:
-                    # 数据合理，执行数据库操作并返回True
+                if 0 <= int(jtrs[0]) <= 50:
+                    # 数据合理，执行数据库操作并返回生成的字符串
                     cur.execute("UPDATE jiting SET people=" + str(int(jtrs[0])) + " WHERE name='" + str(jtsx[0]) + "'")
                     jtconn.commit()
                     cur.close()
@@ -161,7 +168,8 @@ def number_upload(n):
                 else:
                     # 数据不合理，返回False并关闭指针
                     cur.close()
-                    return False
+                    return_msg = "数据不合理，你是不是在干什么坏事！"
+                    return return_msg
     cur.close()
 
 
