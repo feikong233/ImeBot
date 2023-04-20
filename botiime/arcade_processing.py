@@ -2,6 +2,7 @@ import sqlite3
 import re
 
 
+# 从数据库获取全部机厅的信息和人数，对应jtj功能
 def people_query():
     num = 1
     cx = ""
@@ -28,6 +29,7 @@ def people_query():
     return cx
 
 
+# 从数据库获取单个机厅的信息和人数，对应<机厅缩写>j功能
 def arcade_query(n: str):
     # 初始化变量
     num = 1
@@ -65,7 +67,7 @@ def arcade_query(n: str):
                 return False
 
 
-# 编写函数对人数增减消息进行检测和拆分，然后上传到数据库
+# 用于对人数增减消息进行检测和拆分，然后上传到数据库，对应<机厅缩写>[+-]<人数>功能
 def changes_upload(n: str):
     # 初始化变量
     num = 1
@@ -117,6 +119,7 @@ def changes_upload(n: str):
                         return False
 
 
+# 用于直接上传实际人数的检测及拆分，并上传到数据库，对应<机厅缩写><人数>功能                   
 def number_upload(n: str):
     # 初始化变量
     num = 1
