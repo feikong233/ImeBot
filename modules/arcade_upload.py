@@ -6,7 +6,8 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.model import Group, Friend
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
-from botiime.arcade_processing import changes_upload, people_query, number_upload
+
+from botiime.arcade_processing import changes_upload, number_upload
 
 channel = Channel.current()
 
@@ -19,11 +20,13 @@ channel = Channel.current()
 )
 async def upl(app: Ariadne, sender: Union[Group, Friend], message: MessageChain):
     msg = str(message)
-    if changes_upload(msg):
+    case_changes = changes_upload(msg)
+    case_number = number_upload(msg)
+    if isinstance(case_changes, str):
         await app.send_message(sender, MessageChain("数据已更新！"))
         # 查询一次人数
-        await app.send_message(sender, MessageChain(people_query()))
-    elif number_upload(msg):
+        await app.send_message(sender, MessageChain(case_changes))
+    elif isinstance(case_number, str):
         await app.send_message(sender, MessageChain("数据已更新！"))
         # 查询一次人数
-        await app.send_message(sender, MessageChain(people_query()))
+        await app.send_message(sender, MessageChain(case_number))

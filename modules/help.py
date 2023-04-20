@@ -1,5 +1,5 @@
 from typing import Union
-from PIL import Image, ImageDraw, ImageFont
+
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage, FriendMessage
 from graia.ariadne.message.chain import MessageChain

@@ -1,5 +1,38 @@
-import sqlite3
 import re
+import sqlite3
+
+
+# 通过输入的内容判断是否符合数据库中的机厅缩写并查询一次对应机厅的人数
+def arcade_query_return(input_sx):
+    # 初始化变量
+    num = 1
+    sx = []
+    query = ""
+    # 初始化数据库的连接并创建指针
+    jtconn = sqlite3.connect("./db/jiting.db")
+    cur = jtconn.cursor()
+
+    # 获取机厅数量jts
+    cur.execute("SELECT COUNT(id) FROM jiting")
+    jts = cur.fetchall()
+    # 从数据库提取机厅缩写
+    while num <= jts[0][0]:
+        cur.execute("SELECT name FROM jiting WHERE id=" + str(num))
+        sx.append(cur.fetchall())
+        num = num + 1
+    # 检测输入的机厅缩写是否与数据库中的机厅缩写匹配
+    for i in sx:
+        if str(input_sx[0]) == str(i[0][0]):
+            # 操作数据库，提取机厅的全名和人数并且存储在对应的变量里
+            cur.execute("SELECT fullname FROM jiting WHERE name='" + str(input_sx[0]) + "'")
+            fullname = str(cur.fetchall()[0][0])
+            cur.execute("SELECT people FROM jiting WHERE name='" + str(input_sx[0]) + "'")
+            people = str(cur.fetchall()[0][0])
+            # 用一个字符串存储查询结果
+            query = fullname + " 现在有 " + people + " 人"
+            cur.close()
+            return query
+    cur.close()
 
 
 # 从数据库获取全部机厅的信息和人数，对应jtj功能
@@ -30,43 +63,17 @@ def people_query():
 
 
 # 从数据库获取单个机厅的信息和人数，对应<机厅缩写>j功能
-def arcade_query(n: str):
-    # 初始化变量
-    num = 1
-    sx = []
-    query = ""
-    # 初始化数据库的连接并创建指针
-    jtconn = sqlite3.connect("./db/jiting.db")
-    cur = jtconn.cursor()
-
-    # 获取机厅数量jts
-    cur.execute("SELECT COUNT(id) FROM jiting")
-    jts = cur.fetchall()
-    # 从数据库提取机厅缩写
-    while num <= jts[0][0]:
-        cur.execute("SELECT name FROM jiting WHERE id=" + str(num))
-        sx.append(cur.fetchall())
-        num = num + 1
+def arcade_query(n):
     # 正则表达式，分别匹配 <任意字母>j，如chj
     if re.match('[^j]+[$j]', n):
         jtsx = re.findall('[^j]+', n)  # 机厅缩写
         # 检测输入的机厅缩写是否与数据库中的机厅缩写匹配
-        for i in sx:
-            if str(jtsx[0]) == str(i[0][0]):
-                # 操作数据库，提取机厅的全名和人数并且存储在对应的变量里
-                cur.execute("SELECT fullname FROM jiting WHERE name='" + str(jtsx[0]) + "'")
-                fullname = str(cur.fetchall()[0][0])
-                cur.execute("SELECT people FROM jiting WHERE name='" + str(jtsx[0]) + "'")
-                people = str(cur.fetchall()[0][0])
-                # 用一个字符串存储查询结果
-                query = fullname + " 现在有 " + people + " 人"
-                cur.close()
-                return query
-    cur.close()
+        query = arcade_query_return(jtsx)   # 查询一次对应机厅的人数并返回查询结果
+        return query
 
 
 # 用于对人数增减消息进行检测和拆分，然后上传到数据库，对应<机厅缩写>[+-]<人数>功能
-def changes_upload(n: str):
+def changes_upload(n):
     # 初始化变量
     num = 1
     sx = []
@@ -100,7 +107,8 @@ def changes_upload(n: str):
                     cur.execute("UPDATE jiting SET people=" + str(rs_now) + " WHERE name='" + str(jtsx[0]) + "'")
                     jtconn.commit()
                     cur.close()
-                    return True
+                    return_msg = arcade_query_return(jtsx)
+                    return return_msg
 
                 else:
                     # 数据为减，验证数据合理性
@@ -110,7 +118,8 @@ def changes_upload(n: str):
                         cur.execute("UPDATE jiting SET people=" + str(rs_now) + " WHERE name='" + str(jtsx[0]) + "'")
                         jtconn.commit()
                         cur.close()
-                        return True
+                        return_msg = arcade_query_return(jtsx)
+                        return return_msg
                     # 人数小于0，不合理，关闭指针并返回False
                     else:
                         cur.close()
@@ -119,7 +128,7 @@ def changes_upload(n: str):
 
 
 # 用于直接上传实际人数的检测及拆分，并上传到数据库，对应<机厅缩写><人数>功能                   
-def number_upload(n: str):
+def number_upload(n):
     # 初始化变量
     num = 1
     sx = []
@@ -147,9 +156,23 @@ def number_upload(n: str):
                     cur.execute("UPDATE jiting SET people=" + str(int(jtrs[0])) + " WHERE name='" + str(jtsx[0]) + "'")
                     jtconn.commit()
                     cur.close()
-                    return True
+                    return_msg = arcade_query_return(jtsx)
+                    return return_msg
                 else:
                     # 数据不合理，返回False并关闭指针
                     cur.close()
                     return False
     cur.close()
+
+
+# 这个函数用来重置数据库中的people列数据，用于每天定时重置数据库中的机厅人数
+def db_reload():
+    # 初始化数据库的连接并创建指针
+    jtconn = sqlite3.connect("./db/jiting.db")
+    cur = jtconn.cursor()
+    # 重置数据库中people列的所有数据
+    cur.execute(
+        "UPDATE jiting SET people = 0"
+    )
+    jtconn.commit()
+    return True
