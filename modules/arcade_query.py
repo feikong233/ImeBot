@@ -25,5 +25,5 @@ async def jtj(app: Ariadne, sender: Union[Group, Friend], message: MessageChain)
     else:
         # 检测是否符合机厅查询条件，如果符合就返回函数内生成的字符串
         temp = arcade_query(str(message))
-        if temp[0]:
-            await app.send_message(sender, MessageChain(str(temp[1])))
+        if isinstance(temp, str):
+            await app.send_message(sender, MessageChain(temp))

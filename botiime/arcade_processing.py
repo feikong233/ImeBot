@@ -47,9 +47,9 @@ def arcade_query(n: str):
         cur.execute("SELECT name FROM jiting WHERE id=" + str(num))
         sx.append(cur.fetchall())
         num = num + 1
-    # 正则表达式，分别匹配 <任意字母>[+-]<任意数字>，如ch+1
-    if re.match('[a-z]+[$j]', n):
-        jtsx = re.findall('[a-z]+', n)  # 机厅缩写
+    # 正则表达式，分别匹配 <任意字母>j，如chj
+    if re.match('[^j]+[$j]', n):
+        jtsx = re.findall('[^j]+', n)  # 机厅缩写
         # 检测输入的机厅缩写是否与数据库中的机厅缩写匹配
         for i in sx:
             if str(jtsx[0]) == str(i[0][0]):
@@ -59,14 +59,10 @@ def arcade_query(n: str):
                 cur.execute("SELECT people FROM jiting WHERE name='" + str(jtsx[0]) + "'")
                 people = str(cur.fetchall()[0][0])
                 # 用一个字符串存储查询结果
-                query = fullname + "现在有" + people + "人"
+                query = fullname + " 现在有 " + people + " 人"
                 cur.close()
-                # 返回一个元组，包含True和查询的结果
-                return True, query
-            else:
-                # 如果不符合，那么关闭指针并返回False
-                cur.close()
-                return False
+                return query
+    cur.close()
 
 
 # 用于对人数增减消息进行检测和拆分，然后上传到数据库，对应<机厅缩写>[+-]<人数>功能
@@ -119,6 +115,7 @@ def changes_upload(n: str):
                     else:
                         cur.close()
                         return False
+    cur.close()
 
 
 # 用于直接上传实际人数的检测及拆分，并上传到数据库，对应<机厅缩写><人数>功能                   
@@ -142,14 +139,17 @@ def number_upload(n: str):
     if re.match('[a-z]+[0-9]+', n):
         jtsx = re.findall('[a-z]+', n)  # 机厅缩写
         jtrs = re.findall('[0-9]+', n)  # 机厅人数
-        # 判断数据是否合理
-        if int(jtrs[0]) >= 0:
-            # 数据合理，执行数据库操作并返回True
-            cur.execute("UPDATE jiting SET people=" + str(int(jtrs[0])) + " WHERE name='" + str(jtsx[0]) + "'")
-            jtconn.commit()
-            cur.close()
-            return True
-        else:
-            # 数据不合理，返回False并关闭指针
-            cur.close()
-            return False
+        for i in sx:
+            if str(jtsx[0]) == str(i[0][0]):
+                # 判断数据是否合理
+                if int(jtrs[0]) >= 0:
+                    # 数据合理，执行数据库操作并返回True
+                    cur.execute("UPDATE jiting SET people=" + str(int(jtrs[0])) + " WHERE name='" + str(jtsx[0]) + "'")
+                    jtconn.commit()
+                    cur.close()
+                    return True
+                else:
+                    # 数据不合理，返回False并关闭指针
+                    cur.close()
+                    return False
+    cur.close()
