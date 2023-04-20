@@ -28,6 +28,43 @@ def people_query():
     return cx
 
 
+def arcade_query(n: str):
+    # 初始化变量
+    num = 1
+    sx = []
+    # 初始化数据库的连接并创建指针
+    jtconn = sqlite3.connect("./db/jiting.db")
+    cur = jtconn.cursor()
+
+    # 获取机厅数量jts
+    cur.execute("SELECT COUNT(id) FROM jiting")
+    jts = cur.fetchall()
+    # 从数据库提取机厅缩写
+    while num <= jts[0][0]:
+        cur.execute("SELECT name FROM jiting WHERE id=" + str(num))
+        sx.append(cur.fetchall())
+        num = num + 1
+    # 正则表达式，分别匹配 <任意字母>[+-]<任意数字>，如ch+1
+    if re.match('[a-z]+[$j]', n):
+        jtsx = re.findall('[a-z]+', n)  # 机厅缩写
+        # 检测输入的机厅缩写是否与数据库中的机厅缩写匹配
+        for i in sx:
+            if str(jtsx[0]) == str(i[0][0]):
+                # 操作数据库，提取机厅的全名和人数并且存储在对应的变量里
+                cur.execute("SELECT fullname FROM jiting WHERE name='" + str(jtsx[0]) + "'")
+                fullname = str(cur.fetchall()[0][0])
+                cur.execute("SELECT people FROM jiting WHERE name='" + str(jtsx[0]) + "'")
+                people = str(cur.fetchall()[0][0])
+                # 用一个字符串返回查询结果
+                query = fullname + "现在有" + people + "人"
+                cur.close()
+                return True
+            else:
+                # 如果不符合，那么关闭指针并返回False
+                cur.close()
+                return False
+
+
 # 编写函数对人数增减消息进行检测和拆分，然后上传到数据库
 def changes_upload(n: str):
     # 初始化变量
