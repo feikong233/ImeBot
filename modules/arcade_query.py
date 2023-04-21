@@ -22,7 +22,7 @@ async def jtj(app: Ariadne, sender: Union[Group, Friend], message: MessageChain,
         # 检测对应命令
         if str(message) in ["ime jtj", "机厅几", "机厅人数", "jtrs", "ime jtrs", "ijtj"]:
             # 发送消息
-            await app.send_message(sender, MessageChain("ImeBotDX β0.1.5\n当前地区：周口\n\n" + people_query("zhoukou")))
+            await app.send_message(sender, MessageChain("ImeBotDX β0.1.6\n当前地区：周口\n\n" + people_query("zhoukou")))
         else:
             # 检测是否符合机厅查询条件，如果符合就返回函数内生成的字符串
             temp = arcade_query(str(message), "zhoukou")
@@ -32,7 +32,7 @@ async def jtj(app: Ariadne, sender: Union[Group, Friend], message: MessageChain,
         # 检测对应命令
         if str(message) in ["ime jtj", "机厅几", "机厅人数", "jtrs", "ime jtrs", "ijtj"]:
             # 发送消息
-            await app.send_message(sender, MessageChain("ImeBotDX β0.1.5\n当前地区：梦里\n\n" + people_query("arcade")))
+            await app.send_message(sender, MessageChain("ImeBotDX β0.1.6\n当前地区：梦里\n\n" + people_query("arcade")))
         else:
             # 检测是否符合机厅查询条件，如果符合就返回函数内生成的字符串
             temp = arcade_query(str(message), "arcade")
@@ -42,9 +42,9 @@ async def jtj(app: Ariadne, sender: Union[Group, Friend], message: MessageChain,
         # 检测对应命令
         if str(message) in ["ime jtj", "机厅几", "机厅人数", "jtrs", "ime jtrs", "ijtj"]:
             # 发送消息
-            await app.send_message(sender, MessageChain("ImeBotDX β0.1.5\n当前地区：咖喱窝\n\n" + people_query("galiwo")))
+            await app.send_message(sender, MessageChain("ImeBotDX β0.1.6\n当前地区：咖喱窝\n\n" + people_query("galiwo")))
         else:
             # 检测是否符合机厅查询条件，如果符合就返回函数内生成的字符串
-            temp = arcade_query(str(message), "arcade")
+            temp = arcade_query(str(message), "galiwo")
             if isinstance(temp, str):
                 await app.send_message(sender, MessageChain(temp))

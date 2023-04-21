@@ -19,7 +19,7 @@ async def help_msg(app: Ariadne, sender: Union[Group, Friend], message: MessageC
     if str(message) in ["ime help", "!ime", "！ime"]:
         # help信息
         help_message_one = [
-            "ImeBot DX Beta0.1.3 By Botiime\n"
+            "ImeBot DX Beta0.1.6 By Botiime\n"
             "这个Bot开源于https://github.com/feikong233/ImeBot\n"
             "你可以使用!ime或者ime help来打开帮助菜单！\n"
         ]
@@ -31,7 +31,7 @@ async def help_msg(app: Ariadne, sender: Union[Group, Friend], message: MessageC
         ]
         help_message_three = [
             "ime bz/mryt/每日一图 - 获取今日的必应每日一图\n"
-            "ime dragon/随机龙图 - 获取一张随机龙图(未实现)\n"
+            "ime dragon/随机龙图 - 获取一张随机龙图\n"
         ]
         await app.send_message(sender, MessageChain(help_message_one))
         await app.send_message(sender, MessageChain(help_message_two))

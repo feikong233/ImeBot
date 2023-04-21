@@ -128,7 +128,7 @@ def changes_upload(n, area="arcade"):
                         cur.execute("UPDATE " + area + " SET people=" + str(rs_now) + " WHERE name='" + str(jtsx[0]) + "'")
                         jtconn.commit()
                         cur.close()
-                        return_msg = arcade_query_return(jtsx)
+                        return_msg = arcade_query_return(jtsx, area)
                         return return_msg
                     else:
                         cur.close()
@@ -142,7 +142,7 @@ def changes_upload(n, area="arcade"):
                         cur.execute("UPDATE " + area + " SET people=" + str(rs_now) + " WHERE name='" + str(jtsx[0]) + "'")
                         jtconn.commit()
                         cur.close()
-                        return_msg = arcade_query_return(jtsx)
+                        return_msg = arcade_query_return(jtsx, area)
                         return return_msg
                     # 人数小于0，不合理，关闭指针并返回字符串
                     else:
@@ -167,7 +167,7 @@ def changes_upload(n, area="arcade"):
                         cur.execute("UPDATE " + area + " SET people=" + str(rs_now) + " WHERE name='" + str(jtsx[0]) + "' " + "OR chn='" + str(jtsx[0]) + "' ")
                         jtconn.commit()
                         cur.close()
-                        return_msg = arcade_query_return(jtsx)
+                        return_msg = arcade_query_return(jtsx, area)
                         return return_msg
                     else:
                         cur.close()
@@ -181,7 +181,7 @@ def changes_upload(n, area="arcade"):
                         cur.execute("UPDATE " + area + " SET people=" + str(rs_now) + " WHERE name='" + str(jtsx[0]) + "' " + "OR chn='" + str(jtsx[0]) + "' ")
                         jtconn.commit()
                         cur.close()
-                        return_msg = arcade_query_return(jtsx)
+                        return_msg = arcade_query_return(jtsx, area)
                         return return_msg
                     # 人数小于0，不合理，关闭指针并返回字符串
                     else:
@@ -226,7 +226,7 @@ def number_upload(n, area="arcade"):
                     cur.execute("UPDATE " + area + " SET people=" + str(int(jtrs[0])) + " WHERE name='" + str(jtsx[0]) + "' " + "OR chn='" + str(jtsx[0]) + "' ")
                     jtconn.commit()
                     cur.close()
-                    return_msg = arcade_query_return(jtsx)
+                    return_msg = arcade_query_return(jtsx, area)
                     return return_msg
                 else:
                     # 数据不合理，返回False并关闭指针
@@ -245,7 +245,7 @@ def number_upload(n, area="arcade"):
                     cur.execute("UPDATE " + area + " SET people=" + str(int(jtrs[0])) + " WHERE name='" + str(jtsx[0]) + "' " + "OR chn='" + str(jtsx[0]) + "' ")
                     jtconn.commit()
                     cur.close()
-                    return_msg = arcade_query_return(jtsx)
+                    return_msg = arcade_query_return(jtsx, area)
                     return return_msg
                 else:
                     # 数据不合理，返回False并关闭指针
