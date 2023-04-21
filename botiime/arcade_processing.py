@@ -3,11 +3,10 @@ import sqlite3
 
 
 # 通过输入的内容判断是否符合数据库中的机厅缩写并查询一次对应机厅的人数
-def arcade_query_return(input_sx, area=arcade):
+def arcade_query_return(input_sx, area="arcade"):
     # 初始化变量
     num = 1
     sx = []
-    query = ""
     # 初始化数据库的连接并创建指针
     jtconn = sqlite3.connect("./db/arcade.db")
     cur = jtconn.cursor()
@@ -27,7 +26,6 @@ def arcade_query_return(input_sx, area=arcade):
         sx.append(cur.fetchall())
         num = num + 1
     # 检测输入的机厅缩写是否与数据库中的机厅缩写匹配
-    print(sx)
     for i in sx:
         if str(input_sx[0]) == str(i[0][0]):
             # 操作数据库，提取机厅的全名和人数并且存储在对应的变量里
@@ -43,7 +41,7 @@ def arcade_query_return(input_sx, area=arcade):
 
 
 # 从数据库获取全部机厅的信息和人数，对应jtj功能
-def people_query(area = arcade):
+def people_query(area="arcade"):
     num = 1
     cx = ""
     # 加载数据库并初始化指针
@@ -65,7 +63,7 @@ def people_query(area = arcade):
         cur.execute("SELECT name FROM " + area + " WHERE id=" + str(num))
         jtsx = cur.fetchall()
         # 生成包含机厅的名称和信息的字符串，然后进入下一次循环
-        cx = cx + str(jtsx[0][0]) + " " + str(jtmc[0][0]) + " 现在有 " + str(jtrs[0][0]) + " 人\n"
+        cx = cx + str(jtsx[0][0]) + " | " + str(jtmc[0][0]) + " 现在有 " + str(jtrs[0][0]) + " 人\n"
         num = num + 1
     # 关闭指针
     cur.close()
@@ -73,22 +71,22 @@ def people_query(area = arcade):
 
 
 # 从数据库获取单个机厅的信息和人数，对应<机厅缩写>j功能
-def arcade_query(n):
+def arcade_query(n, area="arcade"):
     # 正则表达式，分别匹配 <任意字母>j，如chj
     if re.match('[^j]+[$j]', n):
         jtsx = re.findall('[^j]+', n)  # 机厅缩写
         # 检测输入的机厅缩写是否与数据库中的机厅缩写匹配
-        query = arcade_query_return(jtsx)  # 查询一次对应机厅的人数并返回查询结果
+        query = arcade_query_return(jtsx, area)  # 查询一次对应机厅的人数并返回查询结果
         return query
     elif re.match('[^几]+[$几]', n):
         jtsx = re.findall('[^几]+', n)  # 机厅缩写
         # 检测输入的机厅缩写是否与数据库中的机厅缩写匹配
-        query = arcade_query_return(jtsx)  # 查询一次对应机厅的人数并返回查询结果
+        query = arcade_query_return(jtsx, area)  # 查询一次对应机厅的人数并返回查询结果
         return query
 
 
 # 用于对人数增减消息进行检测和拆分，然后上传到数据库，对应<机厅缩写>[+-]<人数>功能
-def changes_upload(n, area=arcade):
+def changes_upload(n, area="arcade"):
     # 初始化变量
     num = 1
     sx = []
@@ -193,7 +191,7 @@ def changes_upload(n, area=arcade):
 
 
 # 用于直接上传实际人数的检测及拆分，并上传到数据库，对应<机厅缩写><人数>功能                   
-def number_upload(n, area = arcade):
+def number_upload(n, area="arcade"):
     # 初始化变量
     num = 1
     sx = []
@@ -239,7 +237,6 @@ def number_upload(n, area = arcade):
     elif re.match('[\u4e00-\u9fa5]+[0-9]+', n):
         jtsx = re.findall('[\u4e00-\u9fa5]+', n)  # 机厅缩写
         jtrs = re.findall('[0-9]+', n)  # 机厅人数
-        print(jtsx)
         for i in sx:
             if str(jtsx[0]) == str(i[0][0]):
                 # 判断数据是否合理
@@ -259,7 +256,7 @@ def number_upload(n, area = arcade):
 
 
 # 这个函数用来重置数据库中的people列数据，用于每天定时重置数据库中的机厅人数
-def db_reload(area=arcade):
+def db_reload(area="arcade"):
     # 初始化数据库的连接并创建指针
     jtconn = sqlite3.connect("./db/arcade.db")
     cur = jtconn.cursor()

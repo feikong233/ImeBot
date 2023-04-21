@@ -36,4 +36,3 @@ async def help_msg(app: Ariadne, sender: Union[Group, Friend], message: MessageC
         await app.send_message(sender, MessageChain(help_message_one))
         await app.send_message(sender, MessageChain(help_message_two))
         await app.send_message(sender, MessageChain(help_message_three))
-
