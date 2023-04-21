@@ -19,13 +19,13 @@ async def help_msg(app: Ariadne, sender: Union[Group, Friend], message: MessageC
     if str(message) in ["ime help", "!ime", "！ime"]:
         # help信息
         help_message_one = [
-            "ImeBot DX Beta0.1.1 By Botiime\n"
+            "ImeBot DX Beta0.1.3 By Botiime\n"
             "这个Bot开源于https://github.com/feikong233/ImeBot\n"
             "你可以使用!ime或者ime help来打开帮助菜单！\n"
         ]
         help_message_two = [
             "ime jtj - 查询所有机厅当前的人数\n"
-            "<机厅名或缩写> [±] <数值> - 上报机厅人数\n"
+            "<机厅名或缩写>[±]<数值> - 上报机厅人数\n"
             "<机厅名或缩写>j - 查询机厅人数\n"
             "ime b40/b50 - 简短的查看自己的b40/b50数值(未实现)\n"
         ]

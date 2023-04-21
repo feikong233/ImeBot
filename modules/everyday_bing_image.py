@@ -42,4 +42,4 @@ async def everyday_bing_image(app: Ariadne, sender: Union[Group, Friend], messag
             await app.send_message(sender, MessageChain(Image(path=bing_image)))
             sleep(1)
             await app.send_message(sender, MessageChain(
-                '"' + info[0] + '"\n来源：Microsoft Bing & ' + info[1] + '\n地址' + info[2]))
+                '"' + info[0] + '"\n来源：Microsoft Bing & ' + info[1] + '\n地址: ' + info[2]))
