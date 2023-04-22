@@ -18,17 +18,17 @@ channel = Channel.current()
     )
 )
 async def jtj(app: Ariadne, sender: Union[Group, Friend], message: MessageChain, group: Group):
-    if str(group.id) in ["823160932"]:
+    # if str(group.id) in ["823160932"]:
         # 检测对应命令
-        if str(message) in ["ime jtj", "机厅几", "机厅人数", "jtrs", "ime jtrs", "ijtj"]:
+        # if str(message) in ["ime jtj", "机厅几", "机厅人数", "jtrs", "ime jtrs", "ijtj"]:
             # 发送消息
-            await app.send_message(sender, MessageChain("ImeBotDX β0.1.6\n当前地区：周口\n\n" + people_query("zhoukou")))
-        else:
+            # await app.send_message(sender, MessageChain("ImeBotDX β0.1.6\n当前地区：周口\n\n" + people_query("zhoukou")))
+        # else:
             # 检测是否符合机厅查询条件，如果符合就返回函数内生成的字符串
-            temp = arcade_query(str(message), "zhoukou")
-            if isinstance(temp, str):
-                await app.send_message(sender, MessageChain(temp))
-    elif str(group.id) in ["738392519"]:
+            # temp = arcade_query(str(message), "zhoukou")
+            # if isinstance(temp, str):
+                # await app.send_message(sender, MessageChain(temp))
+    if str(group.id) in ["738392519"]:
         # 检测对应命令
         if str(message) in ["ime jtj", "机厅几", "机厅人数", "jtrs", "ime jtrs", "ijtj"]:
             # 发送消息
