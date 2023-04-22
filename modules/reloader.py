@@ -15,12 +15,15 @@ sche = create(GraiaScheduler)
 @channel.use(
     SchedulerSchema(
         timers.crontabify(
-            "30 1 * * * *"
+            "30 1 * * * 1"
         )
     )
 )
 async def db_reloader(app: Ariadne):
-    db_reload()
     await bing_image_get()
+    db_reload("zhoukou")
+    db_reload("galiwo")
+    db_reload("arcade")
     await app.send_group_message(738392519, MessageChain("现在是凌晨1：30，机厅人数已经自动重置！"))
     await app.send_group_message(823160932, MessageChain("现在是凌晨1：30，机厅人数已经自动重置！"))
+    await app.send_group_message(1003802944, MessageChain("现在是凌晨1：30，机厅人数已经自动重置！"))

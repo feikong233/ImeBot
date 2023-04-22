@@ -31,7 +31,7 @@ async def everyday_bing_image(app: Ariadne, sender: Union[Group, Friend], messag
             sleep(0.7)
             await app.send_message(sender, MessageChain(
                 '"' + info[0] + '"\n来源：Microsoft Bing & ' + info[1] + '\n地址' + info[2]))
-        else:
+        elif not try_todays_bing():
             # 如果每日一图不存在，就生成后再获取
             await bing_image_get()
 
