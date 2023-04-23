@@ -77,7 +77,7 @@ def ruiping(qq_id="undefined", member_name="undefined", charter="翠楼屋", com
     )
     rpconn.commit()
     # 返回信息
-    back_msg = "已经上传了对 " + standard_charter + " 的瑞萍！"
+    back_msg = "已经上传了对 " + standard_charter + " 的瑞平！"
     bm_cur.close()
     rp_cur.close()
     return back_msg
@@ -102,6 +102,9 @@ def random_charter_ruiping():
         "SELECT COUNT(id) FROM " + standard_charter
     )
     comm_num = rp_cur.fetchall()[0][0]
+    if int(comm_num) == 0:
+        back_msg = "抽到了一位没有被瑞平过的谱师哦：" + standard_charter + " 使用 ime 瑞平/rp " + standard_charter + " 瑞平内容 来瑞平他！"
+        return back_msg
     # 随机选择一条评论
     random_id = random.randint(1, comm_num)
     # 获取这条评论的内容和信息
@@ -109,9 +112,10 @@ def random_charter_ruiping():
         "SELECT comments, date, member_name, qq_id FROM " + standard_charter + " WHERE id=" + str(random_id)
     )
     result = rp_cur.fetchall()[0]
+    print(result)
     rp_cur.close()
     # 返回生成的字符串
-    ram_comment = '"' + standard_charter + " " + result[0] + '"' + "\n  ———— @" + result[3] + " " + result[2] + " " + result[1]
+    ram_comment = '"' + standard_charter + " " + result[0] + '"' + "\n——\n来自 " + result[2] + " @" + result[3] + " \n" + result[1]
     return ram_comment
 
 
@@ -144,6 +148,9 @@ def if_requesting_ruiping(in_str):
                 "SELECT COUNT(id) FROM " + standard_charter
             )
             comm_num = rp_cur.fetchall()[0][0]
+            if int(comm_num) == 0:
+                back_msg = "这位谱师还没有被瑞平过：" + standard_charter + " 使用 ime 瑞平/rp " + standard_charter + " 瑞平内容 来瑞平他！"
+                return back_msg
             # 随机选择一条评论
             random_id = random.randint(1, comm_num)
             # 获取这条评论的内容和信息
@@ -154,10 +161,10 @@ def if_requesting_ruiping(in_str):
             rp_cur.close()
 
             # 返回生成的字符串
-            ram_comment = '"' + standard_charter + " " + result[0] + '"' + "\n  ———— @" + result[3] + " " + result[2] + " " + result[1]
+            ram_comment = '"' + standard_charter + " " + result[0] + '"' + "\n——\n来自 " + result[2] + " @" + result[3] + " \n" + result[1]
             return ram_comment
         else:
-            return "你输入的谱师名不在已缓存的别名数据中"
+            return "你输入的谱师名不在已缓存的别名数据中！"
 
 
 # 这个函数用来生成一个谱师被瑞平次数排行榜

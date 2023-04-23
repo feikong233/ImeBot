@@ -40,5 +40,5 @@ def try_todays_bing():
     if os.path.exists("./imgs/bing/" + date + "-bing.jpg"):
         return True
     else:
-        await bing_image_get()
+        bing_image_get()
         return True
