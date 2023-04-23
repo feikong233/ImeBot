@@ -1,5 +1,7 @@
 import re
 import sqlite3
+import datetime
+import random
 
 # 初始化变量
 num = 1
@@ -21,14 +23,12 @@ while num <= cts[0][0]:
     # 拼接列表
     nc.extend(reslst)
     num = num + 1
+ps_cur.close()
 
 
 # 检测接收到的消息链是否符合格式，符合则传回True
 def check_if_ruiping(in_str):
     if re.findall('ime (rp|ruiping|锐评|瑞平|瑞萍)|(rp|ruiping|锐评|瑞平|瑞萍) ', in_str):
-        lst = re.match(r'(ime\s(rp|ruiping|锐评|瑞平|瑞萍)|(rp|ruiping|锐评|瑞平|瑞萍)\s)\s*(\S+)\s(.+)', in_str, re.I)
-        print(lst.group(4))
-        print(lst.group(5))
         return True
     else:
         return False
@@ -60,13 +60,63 @@ def is_ruiping(in_str, qq_id="114514", member_name="undefined"):
 # 瑞平功能函数，传入的参数为已经两次匹配正确符合格式并且存在对应条目的信息，这里实现对信息的上报
 def ruiping(qq_id="undefined", member_name="undefined", charter="翠楼屋", comments="never mind the scandal and libel."):
     # 初始化新的指针
+    rpconn = sqlite3.connect("../db/pushi_ruiping.db")
+    rp_cur = rpconn.cursor()
     bm_cur = dbconn.cursor()
 
     # 获取别名对应的谱师标准名称
     bm_cur.execute("SELECT charter_name FROM charters WHERE bieming LIKE '%" + charter + "%'")
     standard_charter = str(bm_cur.fetchall()[0][0])
-    return standard_charter
+
+    # 获取当天日期
+    date = str(datetime.datetime.now().strftime('%Y-%m-%d'))
+
+    # 存入数据库
+    rp_cur.execute(
+        "INSERT INTO " + standard_charter + " (comments,date,member_name,qq_id) VALUES ('" + comments + "', '" + date + "', '" + member_name + "', '" + qq_id + "' )"
+    )
+    rpconn.commit()
+    # 返回信息
+    back_msg = "已经上传了对 " + standard_charter + " 的瑞萍！"
+    bm_cur.close()
+    rp_cur.close()
+    return back_msg
 
 
-resdef = is_ruiping("ime rp 翠 你妈死了。")
-print(resdef)
+# 实现随机抽取一个瑞萍
+def random_charter_ruiping():
+    # 初始化新的指针
+    rpconn = sqlite3.connect("../db/pushi_ruiping.db")
+    rp_cur = rpconn.cursor()
+
+    # 随机抽取一个谱师的标准名
+    ram = random.randint(1, cts[0][0])
+    bm_cur = dbconn.cursor()
+    bm_cur.execute(
+        "SELECT charter_name FROM charters WHERE id= " + str(ram)
+    )
+    standard_charter = bm_cur.fetchall()[0][0]
+    bm_cur.close()
+    # 获取对应表里评论的数量
+    rp_cur.execute(
+        "SELECT COUNT(id) FROM " + standard_charter
+    )
+    comm_num = rp_cur.fetchall()[0][0]
+    # 随机选择一条评论
+    random_id = random.randint(1, comm_num)
+    # 获取这条评论的内容和信息
+    rp_cur.execute(
+        "SELECT comments, date, member_name, qq_id FROM " + standard_charter + " WHERE id=" + str(random_id)
+    )
+    result = rp_cur.fetchall()[0]
+
+    # 返回生成的字符串
+    ram_comment = '"' + standard_charter + " " + result[0] + '"' + "\n  ———— @" + result[3] + " " + result[2] + " " + result[1]
+    return ram_comment
+
+
+def charter_ruiping(in_str):
+
+
+
+print(random_charter_ruiping())
