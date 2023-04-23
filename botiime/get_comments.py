@@ -159,3 +159,31 @@ def if_requesting_ruiping(in_str):
         else:
             return "你输入的谱师名不在已缓存的别名数据中"
 
+
+# 这个函数用来生成一个谱师被瑞平次数排行榜
+def commented_rank():
+    # 初始化变量
+    num = 1
+    sd_name = []
+    lst = []
+    # 初始化数据库指针
+    bmconn = sqlite3.connect("./db/pushi_bieming.db")
+    rpconn = sqlite3.connect("./db/pushi_ruiping.db")
+    bm_cur = bmconn.cursor()
+    rp_cur = rpconn.cursor()
+    # 遍历所有谱师的表，计算条目数量
+    # 拉取谱师标准名称列表
+    while num <= cts[0][0]:
+        bm_cur.execute("SELECT charter_name FROM charters WHERE id=" + str(num))
+        fullname = str(ps_cur.fetchall()[0][0])
+        # 拼接列表
+        sd_name.append(fullname)
+        num = num + 1
+    bm_cur.close()
+    # 遍历，输出一个字典列表，列表中包含标准谱师名称和次数
+    for i in sd_name:
+        rp_cur.execute(
+            "SELECT COUNT(id) FROM " + i
+        )
+        result = dict(sd_name=rp_cur.fetchall())
+        lst.append(result)
