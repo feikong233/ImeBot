@@ -115,8 +115,17 @@ def random_charter_ruiping():
     return ram_comment
 
 
-def charter_ruiping(in_str):
+# 检测输入的字符串是否满足标准并且在满足不同要求时分别调用两种函数
+def if_requesting_ruiping(in_str):
+    if re.findall(r'ime\s(随机瑞萍|随机瑞平|随机锐评|sjrp)|(随机锐评|随机瑞平|随机瑞萍)\s', in_str, re.I):
+        match_result = re.match(r'(ime\s(随机瑞萍|随机瑞平|随机锐评|sjrp)|(随机锐评|随机瑞平|随机瑞萍))*\s(.+)', in_str)
+        # 如果列表中开出的第5个元素是None，则返回随机瑞萍
+        if str(match_result[4]) == "None":
+            comm = random_charter_ruiping()
+            return comm
+        return "1"
 
 
 
-print(random_charter_ruiping())
+
+print(if_requesting_ruiping("随机瑞萍"))
