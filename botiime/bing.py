@@ -41,4 +41,4 @@ def try_todays_bing():
         return True
     else:
         await bing_image_get()
-        return False
+        return True
