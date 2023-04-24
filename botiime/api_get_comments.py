@@ -39,7 +39,7 @@ def check_if_legal(in_str):
 # 实现随机抽取一个瑞萍，原函数random_charter_ruiping()
 def api_random_ruiping():
     # 初始化新的指针
-    rpconn = sqlite3.connect("../db/pushi_ruiping.db",check_same_thread=False)
+    rpconn = sqlite3.connect("../db/pushi_ruiping.db", check_same_thread=False)
     rp_cur = rpconn.cursor()
 
     # 随机抽取一个谱师的标准名
@@ -62,7 +62,13 @@ def api_random_ruiping():
             "is_match": True,
             "is_commented": False,
             "charter": standard_charter,
-            "input_charter": None
+            "input_charter": None,
+            "comments": {
+                "member_name": None,
+                "qq_id": None,
+                "date": None,
+                "comment": None
+            }
         }
         return back_msg
 
@@ -78,11 +84,16 @@ def api_random_ruiping():
 
     # 返回生成的list
     lst_ram_comment = {
+        "is_match": True,
+        "is_commented": True,
         "charter": standard_charter,
-        "member_name": result[2],
-        "qq_id": result[3],
-        "date": result[1],
-        "comments": result[0]
+        "input_charter": None,
+        "comments": {
+            "member_name": result[2],
+            "qq_id": result[3],
+            "date": result[1],
+            "comment": result[0]
+        }
     }
     return lst_ram_comment
 
@@ -95,7 +106,7 @@ def api_random_charter_ruiping(input_str):
 
         # 初始化指针
         bm_cur = dbconn.cursor()
-        rpconn = sqlite3.connect("../db/pushi_ruiping.db",check_same_thread=False)
+        rpconn = sqlite3.connect("../db/pushi_ruiping.db", check_same_thread=False)
         rp_cur = rpconn.cursor()
 
         # 获取别名对应的谱师标准名称
@@ -108,13 +119,20 @@ def api_random_charter_ruiping(input_str):
             "SELECT COUNT(id) FROM " + standard_charter
         )
         comm_num = rp_cur.fetchall()[0][0]
+        # 如果抽取到了一个没有被瑞平过的谱师
         if int(comm_num) == 0:
             back_msg = {
                 "is_match": True,
                 "is_commented": False,
                 "charter": standard_charter,
-                "input_charter": input_str
+                "input_charter": input_str,
+                "comments": {
+                    "member_name": None,
+                    "qq_id": None,
+                    "date": None,
+                    "comment": None
                 }
+            }
             return back_msg
         # 随机选择一条评论
         random_id = random.randint(1, comm_num)
@@ -127,18 +145,29 @@ def api_random_charter_ruiping(input_str):
 
         # 返回生成的list
         lst_ram_comment = {
-            "sd_charter": standard_charter,
+            "is_match": True,
+            "is_commented": True,
+            "charter": standard_charter,
             "input_charter": input_str,
-            "member_name": result[2],
-            "qq_id": result[3],
-            "comments": result[0]
+            "comments": {
+                "member_name": result[2],
+                "qq_id": result[3],
+                "date": result[1],
+                "comment": result[0]
+            }
         }
         return lst_ram_comment
     else:
         lst_back = {
-            "is_match": False,
-            "is_commented": False,
+            "is_match": True,
+            "is_commented": True,
             "charter": None,
-            "input_charter": input_str
+            "input_charter": input_str,
+            "comments": {
+                "member_name": None,
+                "qq_id": None,
+                "date": None,
+                "comment": None
+            }
         }
         return lst_back
