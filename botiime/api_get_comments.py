@@ -171,3 +171,33 @@ def api_random_charter_ruiping(input_str):
             }
         }
         return lst_back
+
+
+# 实现上传一条瑞平，原函数is_ruiping()
+def api_comments_upload(inp_charter: str, qq_id: str, comments: str, member_name: str = " "):
+    # 调用检测函数检测输入的谱师名称是否匹配缓存中的谱师名称
+    if check_if_legal(inp_charter):
+        # 如果匹配，则传入参数并开始调用数据库
+        # 初始化新的指针
+        rpconn = sqlite3.connect("./db/pushi_ruiping.db")
+        rp_cur = rpconn.cursor()
+        bm_cur = dbconn.cursor()
+
+        # 获取别名对应的谱师标准名称
+        bm_cur.execute("SELECT charter_name FROM charters WHERE bieming LIKE '%" + inp_charter + "%'")
+        standard_charter = str(bm_cur.fetchall()[0][0])
+
+        # 获取当天日期
+        date = str(datetime.datetime.now().strftime('%Y-%m-%d'))
+
+        # 存入数据库
+        rp_cur.execute(
+            "INSERT INTO " + standard_charter + " (comments,date,member_name,qq_id) VALUES ('" + comments + "', '" + date + "', '" + member_name + "', '" + qq_id + "' )"
+        )
+        rpconn.commit()
+        # 返回true
+        bm_cur.close()
+        rp_cur.close()
+        return True
+    else:
+        return False
