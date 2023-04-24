@@ -20,7 +20,6 @@ sche = create(GraiaScheduler)
     )
 )
 async def db_reloader(app: Ariadne):
-    await bing_image_get()
     db_reload("zhoukou")
     db_reload("galiwo")
     db_reload("arcade")

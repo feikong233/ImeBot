@@ -39,6 +39,3 @@ async def bing_info_get():
 def try_todays_bing():
     if os.path.exists("./imgs/bing/" + date + "-bing.jpg"):
         return True
-    else:
-        bing_image_get()
-        return True
