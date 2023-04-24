@@ -8,6 +8,8 @@ app = FastAPI()
 
 
 # 一个简单的api实现，可以让其他人通过http或者https访问到瑞萍接口，并且从瑞萍接口拉取瑞萍或者上传瑞萍
+# 直接运行这个py文件就可以启动api，默认地址为 127.0.0.1:8091
+# 修改ip端口等请见下方uvicorn相关
 # -----
 # 函数定义在botiime/api_get_comments.py
 # -----
@@ -20,6 +22,7 @@ def api_default():
             "访问 https://github.com/feikong233/ImeBot 这个仓库可以获取更多信息！\n" \
             "By Botiime 2023.4.24"
     return hello
+
 
 # 实现拉取一条随机瑞萍的接口，不需要传入参数，直接拉取就会返回一组数据，包括谱师、瑞萍内容、qq号码、qq群昵称、日期
 # 如果抽取到了没有被瑞萍过的谱师则会返回一个"is_commented" = False，请注意对布尔值的判定
@@ -61,8 +64,9 @@ def api_charter_comments(requested_data: Item):
 
 
 uvicorn.run(
+	
     app=app,
-    host="0.0.0.0",
-    port=8091,
+    host="0.0.0.0", # 这里对应你的本机ip地址，一般默认即可
+    port=8091, # 这里对应你的api端口，如果你需要从外部访问api那么请务必对外网开放你设置的端口
     workers=1
 )
